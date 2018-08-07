@@ -21,7 +21,7 @@ char recvpack[BUF_SZ];
 struct sockaddr_in from;
 static long total_time = 0;
 
-void handler(int s)
+void handler(int s)		//信号处理，Ctrl C后打印丢包率等信息
 {
   (void)s;
   printf("--- ping statistics ---\n");
@@ -56,7 +56,7 @@ unsigned short chksum(unsigned short* addr, int len)   //校验和
   return (unsigned short)~ret;
 }
 
-int pack(int num, pid_t pid)
+int pack(int num, pid_t pid)					//填装报文信息
 {
   memset(sendpack, 0x00, sizeof(sendpack));
   struct icmp* p= (struct icmp*)sendpack;
@@ -158,9 +158,9 @@ int main(int argc, char* argv[]) {
   printf("PING %s (%s) %d bytes of data.\n", argv[1], inet_ntoa(ad.sin_addr), PACK_LEN);
   while(1)
   {
-    send_packet(sfd, pid, ad);    //发送包
+    send_packet(sfd, pid, ad);    //循环发送包
     recv_packet(sfd);
-    sleep(1);
+    sleep(1);					//间隔一秒
   }
 
   return 0;
